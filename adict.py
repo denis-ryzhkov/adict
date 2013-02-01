@@ -11,7 +11,7 @@ Usage:
 
 See all features, including ajson() in adict.py:test().
 
-adict version 0.1.3
+adict version 0.1.4
 Copyright (C) 2013 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 '''
