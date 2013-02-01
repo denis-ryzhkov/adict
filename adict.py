@@ -74,7 +74,7 @@ def test():
     j = ajson({"e": ["f", {"g": "h"}]}) # JSON with all dicts converted to adicts.
     assert j.e[1].g == 'h' # Get by attr in JSON.
 
-    print('ok')
+    print('OK')
 
 if __name__ == '__main__':
     test()
