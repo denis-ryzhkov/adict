@@ -1,9 +1,17 @@
 '''
 Dict with attr access to keys.
 
-Usage: See the test in the end of file.
+Usage:
 
-adict version 0.1.2
+    pip install adict
+    from adict import adict
+
+    d = adict(a=1)
+    assert d.a == d['a'] == 1
+
+See all features, including ajson() in adict.py:test().
+
+adict version 0.1.3
 Copyright (C) 2013 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 '''
@@ -27,21 +35,15 @@ class adict(dict):
 #### ajson
 
 def ajson(item):
-    if isinstance(item, dict):
-        item = adict(
-            (name, ajson(value))
-            for name, value in item.iteritems()
-        )
-    elif isinstance(item, list):
-        item = [
-            ajson(value)
-            for value in item
-        ]
-    return item
+    return (
+        adict((name, ajson(value)) for name, value in item.iteritems()) if isinstance(item, dict) else
+        [ajson(value) for value in item] if isinstance(item, list) else
+        item
+    )
 
 #### test
 
-def _test():
+def test():
 
     d = adict(a=1) # Create from names and values.
     assert d == adict(dict(a=1)) # Create from dict.
@@ -59,19 +61,20 @@ def _test():
     assert d['copy'] == 3 # Get reserved name by key.
 
     assert isinstance(d.copy(), adict) # copy() is adict too.
-    assert d.copy().a == d.a == 1 # With get by attr working too.
+    assert d.copy().a == d.a == 1 # Really.
 
     assert 'invalid' not in d # Check membership.
 
     try:
         d.invalid # Exception.
         raise Exception('AttributeError expected')
-    except AttributeError: # Exception of correct type.
+    except AttributeError: # Exception is of correct type.
         pass
 
-    assert ajson({"e": ["f", {"g": "h"}]}).e[1].g == 'h' # Get by attr in JSON.
+    j = ajson({"e": ["f", {"g": "h"}]}) # JSON with all dicts converted to adicts.
+    assert j.e[1].g == 'h' # Get by attr in JSON.
 
     print('ok')
 
 if __name__ == '__main__':
-    _test()
+    test()
