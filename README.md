@@ -13,6 +13,6 @@ Usage:
 
 See all features, including `ajson()` in [`adict.py:test()`](https://github.com/denis-ryzhkov/adict/blob/master/adict.py#L46).
 
-adict version 0.1.4  
+adict version 0.1.5  
 Copyright (C) 2013 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT

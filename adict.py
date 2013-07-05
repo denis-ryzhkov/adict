@@ -11,7 +11,7 @@ Usage:
 
 See all features, including ajson() in adict.py:test().
 
-adict version 0.1.4
+adict version 0.1.5
 Copyright (C) 2013 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 '''
@@ -23,8 +23,8 @@ class adict(dict):
     def __getattr__(self, name):
         try:
             return self[name]
-        except KeyError as e:
-            raise AttributeError(*e.args)
+        except KeyError:
+            raise AttributeError("type object '{subclass_name}' has no attribute '{attr_name}'".format(subclass_name=type(self).__name__, attr_name=name))
 
     def __setattr__(self, name, value):
         self[name] = value
@@ -68,8 +68,15 @@ def test():
     try:
         d.invalid # Exception.
         raise Exception('AttributeError expected')
-    except AttributeError: # Exception is of correct type.
+    except AttributeError as e: # Exception is of correct type.
+        assert str(e) == "type object 'adict' has no attribute 'invalid'" # And correct message.
+
+    class SubClass(adict):
         pass
+    try:
+        SubClass().invalid # Exception in SubClass.
+    except AttributeError as e: # Exception is of correct type.
+        assert str(e) == "type object 'SubClass' has no attribute 'invalid'" # And correct message.
 
     j = ajson({"e": ["f", {"g": "h"}]}) # JSON with all dicts converted to adicts.
     assert j.e[1].g == 'h' # Get by attr in JSON.
