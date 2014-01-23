@@ -24,10 +24,19 @@ class adict(dict):
         try:
             return self[name]
         except KeyError:
-            raise AttributeError("type object '{subclass_name}' has no attribute '{attr_name}'".format(subclass_name=type(self).__name__, attr_name=name))
+            raise self.__attr_error(name)
 
     def __setattr__(self, name, value):
         self[name] = value
+        
+    def __delattr__(self, name):
+        try:
+            del self[name]
+        except KeyError:
+            raise self.__attr_error(name)
+            
+    def __attr_error(self, name):
+        return AttributeError("type object '{subclass_name}' has no attribute '{attr_name}'".format(subclass_name=type(self).__name__, attr_name=name))
 
     def copy(self):
         return adict(dict.copy(self))
