@@ -11,7 +11,7 @@ Usage:
 
 See all features, including ajson() in adict.py:test().
 
-adict version 0.1.5
+adict version 0.1.6
 Copyright (C) 2013 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 '''
@@ -28,13 +28,13 @@ class adict(dict):
 
     def __setattr__(self, name, value):
         self[name] = value
-        
+
     def __delattr__(self, name):
         try:
             del self[name]
         except KeyError:
             raise self.__attr_error(name)
-            
+
     def __attr_error(self, name):
         return AttributeError("type object '{subclass_name}' has no attribute '{attr_name}'".format(subclass_name=type(self).__name__, attr_name=name))
 
@@ -59,33 +59,40 @@ def test():
 
     assert d.a == d['a'] == 1 # Get by attr and by key.
 
-    d.b = 2 # Put by attr.
+    d.b = 2 # Set by attr.
     assert d.b == d['b'] == 2
 
-    d['c'] = 3 # Put by key.
+    d['c'] = 3 # Set by key.
     assert d.c == d['c'] == 3
 
-    d.update(copy=3) # Put reserved name by update().
-    d['copy'] = 3 # Put reserved name by key.
+    d.update(copy=3) # Set reserved name by update().
+    d['copy'] = 3 # Set reserved name by key.
     assert d['copy'] == 3 # Get reserved name by key.
 
     assert isinstance(d.copy(), adict) # copy() is adict too.
     assert d.copy().a == d.a == 1 # Really.
 
-    assert 'invalid' not in d # Check membership.
+    del d.a # Delete by attr.
+    assert 'a' not in d # Check membership.
 
     try:
-        d.invalid # Exception.
+        d.a # Exception on get, has no attribute 'a'.
         raise Exception('AttributeError expected')
     except AttributeError as e: # Exception is of correct type.
-        assert str(e) == "type object 'adict' has no attribute 'invalid'" # And correct message.
+        assert str(e) == "type object 'adict' has no attribute 'a'" # And correct message.
+
+    try:
+        del d.a # Exception on delele, has no attribute 'a'.
+        raise Exception('AttributeError expected')
+    except AttributeError as e: # Exception is of correct type.
+        assert str(e) == "type object 'adict' has no attribute 'a'" # And correct message.
 
     class SubClass(adict):
         pass
     try:
-        SubClass().invalid # Exception in SubClass.
+        SubClass().a # Exception in SubClass.
     except AttributeError as e: # Exception is of correct type.
-        assert str(e) == "type object 'SubClass' has no attribute 'invalid'" # And correct message.
+        assert str(e) == "type object 'SubClass' has no attribute 'a'" # And correct message.
 
     j = ajson({"e": ["f", {"g": "h"}]}) # JSON with all dicts converted to adicts.
     assert j.e[1].g == 'h' # Get by attr in JSON.
