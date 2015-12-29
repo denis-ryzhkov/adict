@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='adict',
-    version='0.1.6',
+    version='0.1.7',
     description='Dict with attr access to keys.',
     long_description='''
 Usage::

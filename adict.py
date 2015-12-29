@@ -11,8 +11,8 @@ Usage:
 
 See all features, including ajson() in adict.py:test().
 
-adict version 0.1.6
-Copyright (C) 2013 by Denis Ryzhkov <denisr@denisr.com>
+adict version 0.1.7
+Copyright (C) 2013-2015 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 '''
 
@@ -39,7 +39,7 @@ class adict(dict):
         return AttributeError("type object '{subclass_name}' has no attribute '{attr_name}'".format(subclass_name=type(self).__name__, attr_name=name))
 
     def copy(self):
-        return adict(dict.copy(self))
+        return adict(self)
 
 #### ajson
 
@@ -71,6 +71,7 @@ def test():
 
     assert isinstance(d.copy(), adict) # copy() is adict too.
     assert d.copy().a == d.a == 1 # Really.
+    assert d.copy() is not d # But not the same object.
 
     del d.a # Delete by attr.
     assert 'a' not in d # Check membership.
